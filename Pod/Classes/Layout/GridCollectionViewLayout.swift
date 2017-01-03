@@ -23,54 +23,54 @@
 import UIKit
 
 /**
-Provides a grid collection view layout
-*/
+ Provides a grid collection view layout
+ */
 @objc(BSGridCollectionViewLayout)
 public final class GridCollectionViewLayout: UICollectionViewLayout {
     /**
-    Spacing between items (horizontal and vertical)
-    */
+     Spacing between items (horizontal and vertical)
+     */
     public var itemSpacing: CGFloat = 0 {
         didSet {
             itemSize = estimatedItemSize()
         }
     }
-
+    
     /**
-    Number of items per row
-    */
+     Number of items per row
+     */
     public var itemsPerRow = 3 {
         didSet {
             itemSize = estimatedItemSize()
         }
     }
-
+    
     /**
-    Item height ratio relative to it's width
-    */
+     Item height ratio relative to it's width
+     */
     public var itemHeightRatio: CGFloat = 1 {
         didSet {
             itemSize = estimatedItemSize()
         }
     }
-
+    
     /**
-    Size for each item
-    */
+     Size for each item
+     */
     public private(set) var itemSize = CGSize.zero
-
+    
     var items = 0
     var rows = 0
-
+    
     public override func prepare() {
         // Set total number of items and rows
         items = estimatedNumberOfItems()
         rows = items / itemsPerRow + ((items % itemsPerRow > 0) ? 1 : 0)
-
+        
         // Set item size
         itemSize = estimatedItemSize()
     }
-
+    
     /**
      See UICollectionViewLayout documentation
      */
@@ -82,16 +82,16 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         let height = estimatedRowHeight() * CGFloat(rows)
         return CGSize(width: collectionView.bounds.width, height: height)
     }
-
+    
     /**
      See UICollectionViewLayout documentation
      */
     public override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         return indexPathsInRect(rect).map { (indexPath) -> UICollectionViewLayoutAttributes? in
             return self.layoutAttributesForItem(at: indexPath)
-        }.flatMap { $0 }
+            }.flatMap { $0 }
     }
-
+    
     /**
      See UICollectionViewLayout documentation
      */
@@ -104,29 +104,29 @@ public final class GridCollectionViewLayout: UICollectionViewLayout {
         let itemIndex = flatIndex(indexPath) // index among total number of items
         let rowIndex = itemIndex % itemsPerRow // index within it's row
         let row = itemIndex / itemsPerRow // which row for that item
-
+        
         let x = (CGFloat(rowIndex) * itemSpacing) + (CGFloat(rowIndex) * itemSize.width)
         let y = (CGFloat(row) * itemSpacing) + (CGFloat(row) * itemSize.height)
         let width = itemSize.width
         let height = itemSize.height
-
+        
         let attribute = UICollectionViewLayoutAttributes(forCellWith: indexPath)
         attribute.frame = CGRect(x: x, y: y, width: width, height: height)
-
+        
         return attribute
     }
-
+    
     /**
      See UICollectionViewLayout documentation
      */
     public override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
         return true
     }
-
+    
     // No decoration or supplementary views
     /**
-    See UICollectionViewLayout documentation
-    */
+     See UICollectionViewLayout documentation
+     */
     public override func layoutAttributesForDecorationView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         return nil
     }
@@ -159,7 +159,7 @@ extension GridCollectionViewLayout {
         
         guard startIndex <= endIndex else { return [] }
         let indexPaths = (startIndex...endIndex).map { indexPathFromFlatIndex($0) }
-
+        
         return indexPaths
     }
     
@@ -220,7 +220,7 @@ extension GridCollectionViewLayout {
             return maxIndex
         }
     }
-
+    
     /**
      Takes an index path (which are 2 dimensional) and turns it into a 1 dimensional index
      - parameter indexPath: The index path we want to flatten
@@ -233,7 +233,7 @@ extension GridCollectionViewLayout {
         
         return (0..<(indexPath as NSIndexPath).section).reduce((indexPath as NSIndexPath).row) { $0 + collectionView.numberOfItems(inSection: $1)}
     }
-
+    
     /**
      Converts a flat index into an index path
      - parameter index: The flat index
@@ -243,18 +243,18 @@ extension GridCollectionViewLayout {
         guard let collectionView = collectionView else {
             return IndexPath(item: 0, section: 0)
         }
-
+        
         var item = index
         var section = 0
-
+        
         while(item >= collectionView.numberOfItems(inSection: section)) {
             item -= collectionView.numberOfItems(inSection: section)
             section += 1
         }
-
+        
         return IndexPath(item: item, section: section)
     }
-
+    
     /**
      Estimated the size of the items
      - returns: Estimated item size
@@ -263,11 +263,11 @@ extension GridCollectionViewLayout {
         guard let collectionView = collectionView else {
             return CGSize.zero
         }
-
+        
         let itemWidth = (collectionView.bounds.width - CGFloat(itemsPerRow - 1) * itemSpacing) / CGFloat(itemsPerRow)
         return CGSize(width: itemWidth, height: itemWidth * itemHeightRatio)
     }
-
+    
     /**
      Estimated total number of items
      - returns: Total number of items
@@ -279,7 +279,7 @@ extension GridCollectionViewLayout {
         
         return (0..<collectionView.numberOfSections).reduce(0, {$0 + collectionView.numberOfItems(inSection: $1)})
     }
-
+    
     /**
      Height for each row
      - returns: Row height

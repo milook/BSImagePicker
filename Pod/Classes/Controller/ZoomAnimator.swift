@@ -54,9 +54,9 @@ final class ZoomAnimator : NSObject, UIViewControllerAnimatedTransitioning {
             //Init image scale
             let destinationFrame = toViewController.view.convert(destinationImageView.bounds, from: destinationImageView.superview)
             if destinationImageView.contentMode == .scaleAspectFit {
-                scalingImage.initToScaleAspectFit(toFrame: destinationFrame)
+                scalingImage.initToScaleAspectFit(to: destinationFrame)
             } else {
-                scalingImage.initToScaleAspectFill(toFrame: destinationFrame)
+                scalingImage.initToScaleAspectFill(to: destinationFrame)
             }
             
             // Add views to container view
