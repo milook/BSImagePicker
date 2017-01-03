@@ -22,7 +22,11 @@
 
 import UIKit
 import Photos
+import AVFoundation
+import AVKit
 import BSGridCollectionViewLayout
+
+
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
   case let (l?, r?):
@@ -302,7 +306,8 @@ final class PhotosViewController : UICollectionViewController {
         fetchOptions.sortDescriptors = [
             NSSortDescriptor(key: "creationDate", ascending: false)
         ]
-        fetchOptions.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
+    
+        //fetchOptions.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
         initializePhotosDataSourceWithFetchResult(PHAsset.fetchAssets(in: album, options: fetchOptions), selections: selections)
     }
     
@@ -561,3 +566,33 @@ extension PhotosViewController: PHPhotoLibraryChangeObserver {
         // TODO: Changes in albums
     }
 }
+
+extension PhotosViewController {
+    
+    func playVideoURL(videoURL: URL) {
+        
+        OperationQueue.main.addOperation {
+            let player = AVPlayer(url: videoURL)
+            let controller = AVPlayerViewController()
+                controller.player = player
+            self.present(controller, animated: true) { () -> Void in
+                player.play()
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
