@@ -98,6 +98,8 @@ final class PhotoCell: UICollectionViewCell {
         videoGradient.frame = videoView.bounds
     }
     
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         

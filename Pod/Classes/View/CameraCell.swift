@@ -12,8 +12,10 @@ import AVFoundation
 /**
 */
 final class CameraCell: UICollectionViewCell {
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var cameraBackground: UIView!
+    
+    var imageView: UIImageView!
+    var cameraBackground: UIView!
+    
     var takePhotoIcon: UIImage? {
         didSet {
             imageView.image = takePhotoIcon
@@ -27,8 +29,15 @@ final class CameraCell: UICollectionViewCell {
     var captureLayer: AVCaptureVideoPreviewLayer?
     let sessionQueue = DispatchQueue(label: "AVCaptureVideoPreviewLayer", attributes: [])
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
+    init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        self.cameraBackground = UIView(frame: bounds)
+        self.imageView = UIImageView(frame: bounds)
+        self.imageView.contentMode = .center
+        
+        self.addSubview(cameraBackground)
+        self.addSubview(imageView)
         
         // Don't trigger camera access for the background
         guard AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) == .authorized else {

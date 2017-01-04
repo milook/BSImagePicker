@@ -26,7 +26,7 @@ import UIKit
 The navigation title view with album name and a button for activating the drop down.
 */
 final class AlbumTitleView: UIView {
-    @IBOutlet weak var albumButton: UIButton!
+    var albumButton: UIButton!
     
     fileprivate var context = 0
     
@@ -48,11 +48,18 @@ final class AlbumTitleView: UIView {
         }
     }
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
-        // Set image
-        albumButton?.setImage(arrowDownImage, for: UIControlState())
+        self.albumButton = UIButton(type: .custom)
+        self.albumButton.setImage(arrowDownImage, for: UIControlState())
+        self.addSubview(albumButton)
+        
+        let alignX = NSLayoutConstraint(item: albumButton, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0)
+        let alignY = NSLayoutConstraint(item: albumButton, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0)
+        let leading = NSLayoutConstraint(item: albumButton, attribute: .leading, relatedBy: .equal, toItem: self, attribute: .leading, multiplier: 1, constant: 8)
+        let trailing = NSLayoutConstraint(item: albumButton, attribute: .trailing, relatedBy: .equal, toItem: self, attribute: .trailing, multiplier: 1, constant: -8)
+        self.addConstraints([alignX, alignY, leading, trailing])
     }
     
     lazy var arrowDownImage: UIImage? = {
